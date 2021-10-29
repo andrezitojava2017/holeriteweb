@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mongodb.Mongo
+  data:
+    mongodb:
+      host: localhost
+      database: api
+      port: 27017
+logging:
+  level:
+    ROOT: DEBUG
+  debug: true
+
