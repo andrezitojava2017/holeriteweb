@@ -92,26 +92,5 @@ public class Usuario {
     }
 
 
-    /**
-     * consulta na base de dados de usuarios, se exite o token informado
-     * caso existir, retorna o usuario
-     *
-     * @param tokenUser
-     * @return ResponseEntity<Usuario>
-     */
-    public Usuario recuperarUsuario(String tokenUser) {
-
-        Usuario user;
-        List<Usuario> lista = repository.findAll();
-        System.out.println(">>>>>>>>>>>> " + lista.size());
-        for (Usuario us : lista) {
-            if (us.getToken().equalsIgnoreCase(tokenUser)) {
-                user = us;
-                return user;
-            }
-        }
-
-        return null;
-    }
 
 }

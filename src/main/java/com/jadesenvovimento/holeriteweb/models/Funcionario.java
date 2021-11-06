@@ -11,6 +11,7 @@ public class Funcionario {
     @Id
     private String id;
     private String nomeFuncionario;
+    private String cpf;
     private Cargo cargo;
     private Orgao orgao;
 
@@ -19,10 +20,35 @@ public class Funcionario {
 
     }
 
-    public Funcionario(String nomeFuncionario, Cargo cargo, Orgao orgao) {
+    public Funcionario(String id, String nomeFuncionario, String cpf, Cargo cargo, Orgao orgao) {
+        this.id = id;
         this.nomeFuncionario = nomeFuncionario;
+        this.cpf = cpf;
         this.cargo = cargo;
         this.orgao = orgao;
+    }
+
+    public Funcionario(String nomeFuncionario, String cpf, Cargo cargo, Orgao orgao) {
+        this.nomeFuncionario = nomeFuncionario;
+        this.cpf = cpf;
+        this.cargo = cargo;
+        this.orgao = orgao;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public String getNomeFuncionario() {

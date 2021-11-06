@@ -12,4 +12,4 @@ logging:
   debug: true
 
 resource:
-  caminhoAnexo: "d:\\lista.txt"
+  caminhoAnexo: "d:\\listaFuncionarios.txt"

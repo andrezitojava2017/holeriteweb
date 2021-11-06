@@ -7,14 +7,14 @@ public class Cargo {
     private String nomeCargo;
     private LocalDate admissao;
 
-    public Cargo(String nomeCargo) {
-        this.nomeCargo = nomeCargo;
-    }
 
     public Cargo() {
     }
 
-
+    public Cargo(String nomeCargo, LocalDate admissao) {
+        this.nomeCargo = nomeCargo;
+        this.admissao = admissao;
+    }
 
     public LocalDate getAdmissao() {
         return admissao;
