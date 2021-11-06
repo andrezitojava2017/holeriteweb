@@ -71,4 +71,11 @@ public class UsuarioService {
         Optional<Usuario> usuarioCpf = Optional.ofNullable(repository.findByCpf(doc));
         return usuarioCpf;
     }
+
+    public Usuario atualizarUsuario(Usuario antigoUsuario, Usuario usuarioNovo){
+        usuarioNovo.setId(antigoUsuario.getId());
+        usuarioNovo.getOrgao();
+        Usuario save = repository.save(usuarioNovo);
+        return save;
+    }
 }

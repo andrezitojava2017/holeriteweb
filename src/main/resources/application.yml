@@ -11,3 +11,5 @@ logging:
     ROOT: DEBUG
   debug: true
 
+resource:
+  caminhoAnexo: "d:\\listaFuncionarios.txt"

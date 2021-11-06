@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class Cargo {
 
     private String nomeCargo;
-
     private LocalDate admissao;
+
     public Cargo(String nomeCargo) {
         this.nomeCargo = nomeCargo;
     }
