@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FuncionarioService {
@@ -27,9 +28,10 @@ public class FuncionarioService {
 
 
     /**
-     * Metodo que ira ler o arquivo ANEXO1 com dados dos funcionarios
-     * que deverão salvar na base de dados
+     * Metodo para ler o arquivo ANEXO1 com dados dos funcionarios
+     * que serao persistidos na base de dados
      * retorna uma lista de funcionarios
+     *
      * @param caminhoArquivo
      * @param orgao
      * @return
@@ -40,6 +42,9 @@ public class FuncionarioService {
 
             Path anexo1 = Paths.get(caminhoArquivo);
             List<String> linha = Files.readAllLines(anexo1, StandardCharsets.ISO_8859_1);
+
+            // remove a primeira linha, cabeçalho do arquivo
+            linha.remove(0);
 
             linha.stream()
                     .map(ff -> ff.split("#"))
@@ -70,10 +75,11 @@ public class FuncionarioService {
 
     /**
      * cria arquivo no destino padrao
+     *
      * @param file
      * @param destino
      */
-    public void uploadArquivo(MultipartFile file, String destino){
+    public void uploadArquivo(MultipartFile file, String destino) {
 
         try {
 
@@ -86,8 +92,16 @@ public class FuncionarioService {
     }
 
 
+    public Optional<List<Funcionario>> recuperarListaFuncionariosPorCnpj(String cnpj){
+
+        Optional<List<Funcionario>> all = Optional.ofNullable(repository.findByCnpj(cnpj));
+        return all;
+    }
+
+
     /**
      * metodo que recebe uma data em string e converte para LocalDate
+     *
      * @param dat
      * @return
      */

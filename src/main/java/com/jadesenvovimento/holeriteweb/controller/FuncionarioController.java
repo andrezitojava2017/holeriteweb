@@ -1,6 +1,7 @@
 package com.jadesenvovimento.holeriteweb.controller;
 
 import com.jadesenvovimento.holeriteweb.components.Resources;
+import com.jadesenvovimento.holeriteweb.exceptions.FuncionarioException;
 import com.jadesenvovimento.holeriteweb.exceptions.OrgaoNotFount;
 import com.jadesenvovimento.holeriteweb.exceptions.TokenNotFoundExcpetion;
 import com.jadesenvovimento.holeriteweb.models.Funcionario;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -36,19 +38,21 @@ public class FuncionarioController {
     @Autowired
     OrgaoService orgao;
 
+
+
     @PostMapping("/")
     public ResponseEntity<String> funcionario(
             @RequestHeader(value = "token") String token,
             @RequestHeader(value = "cnpj") String cnpj,
             @RequestParam("anexo") MultipartFile anexo) {
 
-        if(usuario.verificaTokenUsuario(token)){
+        if (usuario.verificaTokenUsuario(token)) {
 
             String[] split = anexo.getContentType().split("/");
-            if(split[1].equals("plain")){
+            if (split[1].equals("plain")) {
                 Optional<Orgao> org = this.orgao.consultaOrgaoPorCnpj(cnpj);
 
-                if (org.isPresent()){
+                if (org.isPresent()) {
 
                     // cria o arquivo no diretorio padrao
                     service.uploadArquivo(anexo, re.getCaminhoAnexo());
@@ -62,14 +66,25 @@ public class FuncionarioController {
                     throw new OrgaoNotFount("CNPJ informado nao existe na base de dados");
                 }
             } else {
-                return new ResponseEntity("Arquivo informado com extensão invalida",HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity("Arquivo informado com extensão invalida", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
         } else {
             throw new TokenNotFoundExcpetion("Token invalido!");
         }
-    return new ResponseEntity<>("Funcionarios salvos com sucesso!", HttpStatus.OK);
+        return new ResponseEntity<>("Funcionarios salvos com sucesso!", HttpStatus.OK);
     }
 
 
+    @GetMapping("/{cnpj}")
+    public ResponseEntity<List<Funcionario>> getListaFuncionariosPorCnpj(@RequestHeader(value = "token") String token,
+                                                                         @PathVariable String cnpj) {
+
+        Optional<List<Funcionario>> listaFuncionarios = service.recuperarListaFuncionariosPorCnpj(cnpj);
+
+        if (listaFuncionarios.isPresent()) {
+            return new ResponseEntity<List<Funcionario>>(listaFuncionarios.get(), HttpStatus.OK);
+        }
+        throw new OrgaoNotFount("Orgão nao localizado na base de dados");
+    }
 }
