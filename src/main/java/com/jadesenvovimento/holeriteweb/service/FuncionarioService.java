@@ -100,6 +100,17 @@ public class FuncionarioService {
 
 
     /**
+     * recupera um funcionario pelo CPF informado
+     * @param cpf
+     * @return
+     */
+    public Optional<Funcionario> funcionarioPorCpf(String cpf){
+        Optional<Funcionario> funCpf = Optional.ofNullable(repository.findByCpf(cpf));
+        return funCpf;
+    }
+
+
+    /**
      * metodo que recebe uma data em string e converte para LocalDate
      *
      * @param dat

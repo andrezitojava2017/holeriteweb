@@ -39,7 +39,6 @@ public class FuncionarioController {
     OrgaoService orgao;
 
 
-
     @PostMapping("/")
     public ResponseEntity<String> funcionario(
             @RequestHeader(value = "token") String token,
@@ -79,12 +78,27 @@ public class FuncionarioController {
     @GetMapping("/{cnpj}")
     public ResponseEntity<List<Funcionario>> getListaFuncionariosPorCnpj(@RequestHeader(value = "token") String token,
                                                                          @PathVariable String cnpj) {
+        if (usuario.verificaTokenUsuario(token)) {
 
-        Optional<List<Funcionario>> listaFuncionarios = service.recuperarListaFuncionariosPorCnpj(cnpj);
+            Optional<List<Funcionario>> listaFuncionarios = service.recuperarListaFuncionariosPorCnpj(cnpj);
 
-        if (listaFuncionarios.isPresent()) {
-            return new ResponseEntity<List<Funcionario>>(listaFuncionarios.get(), HttpStatus.OK);
+            if (listaFuncionarios.isPresent()) {
+                return new ResponseEntity<List<Funcionario>>(listaFuncionarios.get(), HttpStatus.OK);
+            }
         }
-        throw new OrgaoNotFount("Orgão nao localizado na base de dados");
+
+        throw new TokenNotFoundExcpetion("Token nao foi informado!");
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<Funcionario> getFuncionarioPorCpf(@PathVariable String cpf,
+                                                            @RequestHeader(value = "token") String token) {
+        if (usuario.verificaTokenUsuario(token)){
+
+            Optional<Funcionario> cpfFun = service.funcionarioPorCpf(cpf);
+            return new ResponseEntity<Funcionario>(cpfFun.get(), HttpStatus.OK);
+        }
+        throw new TokenNotFoundExcpetion("Token nao foi informado!");
+
     }
 }

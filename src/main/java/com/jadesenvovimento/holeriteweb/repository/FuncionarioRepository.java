@@ -12,4 +12,7 @@ public interface FuncionarioRepository extends MongoRepository<Funcionario, Stri
 
     @Query("{'orgao.cnpj': ?0}")
     List<Funcionario> findByCnpj(String cnpj);
+
+    @Query("{'cpf': ?0}")
+    Funcionario findByCpf(String cpf);
 }
