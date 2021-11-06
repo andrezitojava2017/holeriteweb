@@ -6,6 +6,7 @@ import com.jadesenvovimento.holeriteweb.models.Orgao;
 import com.jadesenvovimento.holeriteweb.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -65,6 +66,23 @@ public class FuncionarioService {
             e.printStackTrace();
         }
         return lst;
+    }
+
+    /**
+     * cria arquivo no destino padrao
+     * @param file
+     * @param destino
+     */
+    public void uploadArquivo(MultipartFile file, String destino){
+
+        try {
+
+            Path DestArquivo = Paths.get(destino);
+            file.transferTo(DestArquivo);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

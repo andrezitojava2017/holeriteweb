@@ -50,14 +50,13 @@ public class FuncionarioController {
 
                 if (org.isPresent()){
 
+                    // cria o arquivo no diretorio padrao
+                    service.uploadArquivo(anexo, re.getCaminhoAnexo());
+
                     //iremos ler o arquivo  e retornar uma lista de funcionarios
                     List<Funcionario> funcionarios = service.lerArquivoListaFuncionarios(re.getCaminhoAnexo(), org.get());
 
                     List<Funcionario> lstFun = funcRepository.saveAll(funcionarios);
-
-                    lstFun.forEach(fn->{
-                        System.out.println(">>>>>> " + fn.getId() + " -  " + fn.getNomeFuncionario());
-                    } );
 
                 } else {
                     throw new OrgaoNotFount("CNPJ informado nao existe na base de dados");

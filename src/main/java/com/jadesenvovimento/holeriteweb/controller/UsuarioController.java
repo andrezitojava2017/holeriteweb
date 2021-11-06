@@ -10,14 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,37 +131,5 @@ public class UsuarioController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
-
-    @PostMapping("/upload")
-    public ResponseEntity uploadListaFuncionarios(@RequestHeader(value = "token") String token,
-                                                     @RequestParam("anexo") MultipartFile anexo) {
-
-        if (service.verificaTokenUsuario(token)) {
-
-            String[] split = anexo.getContentType().split("/");
-            if (split[1].equalsIgnoreCase("plain")) {
-
-                try {
-
-                    // caminho definido no applicaton.yml
-                    Path caminho = Paths.get(re.getCaminhoAnexo());
-                    anexo.transferTo(caminho);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
 
 }
