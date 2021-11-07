@@ -5,6 +5,10 @@ import com.jadesenvovimento.holeriteweb.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -15,6 +19,27 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository repository;
 
+
+    /**
+     * Metodo que ira gerar TOKEN de acesso ao usuario
+     * SHA gerado pelo numero do CPF
+     * @param cpf
+     * @return
+     */
+    public String gerarTokenHash(String cpf){
+
+        String token = null;
+        try {
+
+            MessageDigest sha = MessageDigest.getInstance("SHA-256");
+            sha.update(cpf.getBytes(StandardCharsets.UTF_8));
+            token = String.format("%064x", new BigInteger(1,sha.digest()));
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return token;
+    }
 
     /**
      * Verifica token informado, se existir token, o usuario é cadastrado

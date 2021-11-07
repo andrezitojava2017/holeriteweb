@@ -107,8 +107,14 @@ public class UsuarioController {
     public ResponseEntity<Usuario> novoUsuario(@Valid @RequestBody Usuario usuario, @RequestHeader(value = "token") String token) {
 
         if (service.verificaTokenUsuario(token)) {
+
+            // define o TOKEN do novo usuario
+            String usuarioToken = service.gerarTokenHash(usuario.getCpf());
+            usuario.setToken(usuarioToken);
+
             Usuario novoUsuario = service.inserirNovoUsuario(usuario);
             return new ResponseEntity<Usuario>(novoUsuario, HttpStatus.OK);
+
         } else {
             throw new TokenNotFoundExcpetion("Token nao foi informado!");
         }

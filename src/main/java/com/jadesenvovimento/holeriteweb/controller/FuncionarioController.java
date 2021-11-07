@@ -75,6 +75,22 @@ public class FuncionarioController {
     }
 
 
+
+    @PostMapping("/novo")
+    public ResponseEntity<Funcionario> novoFuncionario(@RequestBody Funcionario novoFuncionario,
+                                                       @RequestHeader(value = "token") String token) {
+
+        if (usuario.verificaTokenUsuario(token)) {
+
+            return service.novoFuncionario(novoFuncionario);
+
+        } else {
+            throw new TokenNotFoundExcpetion("TOKEN nao foi informado!!");
+        }
+
+    }
+
+
     @GetMapping("/cnpj/{cnpj}")
     public ResponseEntity<List<Funcionario>> getListaFuncionariosPorCnpj(@RequestHeader(value = "token") String token,
                                                                          @PathVariable String cnpj) {
@@ -93,7 +109,7 @@ public class FuncionarioController {
     @GetMapping("/cpf/{cpf}")
     public ResponseEntity<Funcionario> getFuncionarioPorCpf(@PathVariable String cpf,
                                                             @RequestHeader(value = "token") String token) {
-        if (usuario.verificaTokenUsuario(token)){
+        if (usuario.verificaTokenUsuario(token)) {
 
             Optional<Funcionario> cpfFun = service.funcionarioPorCpf(cpf);
             return new ResponseEntity<Funcionario>(cpfFun.get(), HttpStatus.OK);
@@ -105,12 +121,12 @@ public class FuncionarioController {
     @PutMapping("/{id}")
     public ResponseEntity<Funcionario> atuaizarDadosFuncionario(@RequestBody Funcionario func,
                                                                 @RequestHeader(value = "token") String token,
-                                                                @PathVariable String id){
+                                                                @PathVariable String id) {
 
-        if(usuario.verificaTokenUsuario(token)){
+        if (usuario.verificaTokenUsuario(token)) {
             Optional<Funcionario> funcAntigo = service.funcionarioPorId(id);
 
-            if(funcAntigo.isPresent()){
+            if (funcAntigo.isPresent()) {
 
                 Funcionario funcAtualizado = service.atualizarDadosFuncinario(funcAntigo.get(), func);
                 return new ResponseEntity<>(funcAtualizado, HttpStatus.OK);

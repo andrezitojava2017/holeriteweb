@@ -5,6 +5,8 @@ import com.jadesenvovimento.holeriteweb.models.Funcionario;
 import com.jadesenvovimento.holeriteweb.models.Orgao;
 import com.jadesenvovimento.holeriteweb.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +28,7 @@ public class FuncionarioService {
     @Autowired
     FuncionarioRepository repository;
 
+    private Boolean cpfExist;
 
     /**
      * Metodo para ler o arquivo ANEXO1 com dados dos funcionarios
@@ -123,6 +126,30 @@ public class FuncionarioService {
     }
 
     /**
+     * Metodo para inserir novo funcionario na base de dados
+     * Inserção de UM unico funcionario
+     *
+     * @param novoFunc
+     * @return
+     */
+    public ResponseEntity novoFuncionario(Funcionario novoFunc) {
+
+        // verificamos se o CPF ja esta cadastrado
+        boolean resultCpf = verificaCpfBaseDados(novoFunc.getCpf());
+
+        // se nao existir, salvamos na base
+        if (!resultCpf) {
+            // se o CPF NAO EXISTIR é salvo o novo usuario
+            Funcionario save = repository.save(novoFunc);
+            return new ResponseEntity(save, HttpStatus.OK);
+        }
+
+        // se CPF existir retornamos o usuario com o CPF vinculado
+        return new ResponseEntity(repository.findByCpf(novoFunc.getCpf()), HttpStatus.CONFLICT);
+    }
+
+
+    /**
      * Metodo para ataualizar dados de um ususario
      *
      * @param funcAntigo
@@ -133,6 +160,24 @@ public class FuncionarioService {
         funcNovo.setId(funcAntigo.getId());
         Funcionario save = repository.save(funcNovo);
         return save;
+    }
+
+    /**
+     * Metodo que verifica se EXISTE UM CPF na base de dados
+     */
+    public boolean verificaCpfBaseDados(String cpf) {
+
+
+        Optional<Funcionario> cpfVerificado = Optional.ofNullable(repository.findByCpf(cpf));
+        cpfVerificado.ifPresentOrElse(fun -> {
+            // se CPF existir
+            cpfExist = true;
+        }, () -> {
+            // cpf nao exist
+            cpfExist = false;
+        });
+
+        return cpfExist;
     }
 
     /**
