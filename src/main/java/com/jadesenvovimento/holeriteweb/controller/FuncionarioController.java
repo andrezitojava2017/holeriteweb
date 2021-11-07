@@ -51,8 +51,7 @@ public class FuncionarioController {
             if (split[1].equals("plain")) {
                 Optional<Orgao> org = this.orgao.consultaOrgaoPorCnpj(cnpj);
 
-                if (org.isPresent()) {
-
+                org.ifPresentOrElse(og -> {
                     // cria o arquivo no diretorio padrao
                     service.uploadArquivo(anexo, re.getCaminhoAnexo());
 
@@ -61,9 +60,10 @@ public class FuncionarioController {
 
                     List<Funcionario> lstFun = funcRepository.saveAll(funcionarios);
 
-                } else {
+                }, () -> {
                     throw new OrgaoNotFount("CNPJ informado nao existe na base de dados");
-                }
+                });
+
             } else {
                 return new ResponseEntity("Arquivo informado com extensão invalida", HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -73,7 +73,6 @@ public class FuncionarioController {
         }
         return new ResponseEntity<>("Funcionarios salvos com sucesso!", HttpStatus.OK);
     }
-
 
 
     @PostMapping("/novo")
