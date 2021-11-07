@@ -92,7 +92,7 @@ public class FuncionarioService {
     }
 
 
-    public Optional<List<Funcionario>> recuperarListaFuncionariosPorCnpj(String cnpj){
+    public Optional<List<Funcionario>> recuperarListaFuncionariosPorCnpj(String cnpj) {
 
         Optional<List<Funcionario>> all = Optional.ofNullable(repository.findByCnpj(cnpj));
         return all;
@@ -101,14 +101,39 @@ public class FuncionarioService {
 
     /**
      * recupera um funcionario pelo CPF informado
+     *
      * @param cpf
      * @return
      */
-    public Optional<Funcionario> funcionarioPorCpf(String cpf){
+    public Optional<Funcionario> funcionarioPorCpf(String cpf) {
         Optional<Funcionario> funCpf = Optional.ofNullable(repository.findByCpf(cpf));
         return funCpf;
     }
 
+    /**
+     * metodo que recupera um funcionario pelo ID
+     *
+     * @param id
+     * @return
+     */
+    public Optional<Funcionario> funcionarioPorId(String id) {
+
+        Optional<Funcionario> byId = repository.findById(id);
+        return byId;
+    }
+
+    /**
+     * Metodo para ataualizar dados de um ususario
+     *
+     * @param funcAntigo
+     * @return
+     */
+    public Funcionario atualizarDadosFuncinario(Funcionario funcAntigo, Funcionario funcNovo) {
+
+        funcNovo.setId(funcAntigo.getId());
+        Funcionario save = repository.save(funcNovo);
+        return save;
+    }
 
     /**
      * metodo que recebe uma data em string e converte para LocalDate

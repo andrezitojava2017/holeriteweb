@@ -40,7 +40,7 @@ public class FuncionarioController {
 
 
     @PostMapping("/")
-    public ResponseEntity<String> funcionario(
+    public ResponseEntity<String> uploadDadosFuncionario(
             @RequestHeader(value = "token") String token,
             @RequestHeader(value = "cnpj") String cnpj,
             @RequestParam("anexo") MultipartFile anexo) {
@@ -75,7 +75,7 @@ public class FuncionarioController {
     }
 
 
-    @GetMapping("/{cnpj}")
+    @GetMapping("/cnpj/{cnpj}")
     public ResponseEntity<List<Funcionario>> getListaFuncionariosPorCnpj(@RequestHeader(value = "token") String token,
                                                                          @PathVariable String cnpj) {
         if (usuario.verificaTokenUsuario(token)) {
@@ -100,5 +100,25 @@ public class FuncionarioController {
         }
         throw new TokenNotFoundExcpetion("Token nao foi informado!");
 
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Funcionario> atuaizarDadosFuncionario(@RequestBody Funcionario func,
+                                                                @RequestHeader(value = "token") String token,
+                                                                @PathVariable String id){
+
+        if(usuario.verificaTokenUsuario(token)){
+            Optional<Funcionario> funcAntigo = service.funcionarioPorId(id);
+
+            if(funcAntigo.isPresent()){
+
+                Funcionario funcAtualizado = service.atualizarDadosFuncinario(funcAntigo.get(), func);
+                return new ResponseEntity<>(funcAtualizado, HttpStatus.OK);
+            }
+
+        } else {
+            throw new TokenNotFoundExcpetion("TOKEN nao foi informado!");
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
