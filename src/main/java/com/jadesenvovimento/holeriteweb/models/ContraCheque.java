@@ -4,33 +4,48 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Document(collection = "contra-cheques")
 public class ContraCheque {
 
     @Id
     private String id;
-    private Cargo cargo;
     private Funcionario funcionario;
-    private Orgao orgao;
     private LocalDate competencia;
+    private List<ProventoDescontoNeutro> proventos;
+    private List<ProventoDescontoNeutro> descontos;
 
     public ContraCheque() {
     }
 
-    public ContraCheque(Cargo cargo, Funcionario funcionario, Orgao orgao, LocalDate competencia) {
-        this.cargo = cargo;
+    public ContraCheque( Funcionario funcionario, Orgao orgao, LocalDate competencia) {
         this.funcionario = funcionario;
-        this.orgao = orgao;
         this.competencia = competencia;
     }
 
-    public Cargo getCargo() {
-        return cargo;
+    public String getId() {
+        return id;
     }
 
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<ProventoDescontoNeutro> getProventos() {
+        return proventos;
+    }
+
+    public void setProventos(List<ProventoDescontoNeutro> proventos) {
+        this.proventos = proventos;
+    }
+
+    public List<ProventoDescontoNeutro> getDescontos() {
+        return descontos;
+    }
+
+    public void setDescontos(List<ProventoDescontoNeutro> descontos) {
+        this.descontos = descontos;
     }
 
     public Funcionario getFuncionario() {
@@ -39,14 +54,6 @@ public class ContraCheque {
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
-    }
-
-    public Orgao getOrgao() {
-        return orgao;
-    }
-
-    public void setOrgao(Orgao orgao) {
-        this.orgao = orgao;
     }
 
     public LocalDate getCompetencia() {

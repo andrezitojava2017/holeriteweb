@@ -5,33 +5,25 @@ public class ProventoDescontoNeutro {
     private double valor;
     private int quantidadeRef;
     private int codigoRubrica;
-    private String nomeRubrica;
+    private String descricaoRubrica;
 
 
     public ProventoDescontoNeutro() {
     }
 
-    public ProventoDescontoNeutro(double valor, int quantidadeRef, int codigoRubrica, String nomeRubrica) {
+    public ProventoDescontoNeutro(double valor, int quantidadeRef, int codigoRubrica, String descricaoRubrica) {
         this.valor = valor;
         this.quantidadeRef = quantidadeRef;
         this.codigoRubrica = codigoRubrica;
-        this.nomeRubrica = nomeRubrica;
+        this.descricaoRubrica = descricaoRubrica;
     }
 
-    public int getCodigoRubrica() {
-        return codigoRubrica;
+    public double getValor() {
+        return valor;
     }
 
-    public void setCodigoRubrica(int codigoRubrica) {
-        this.codigoRubrica = codigoRubrica;
-    }
-
-    public String getNomeRubrica() {
-        return nomeRubrica;
-    }
-
-    public void setNomeRubrica(String nomeRubrica) {
-        this.nomeRubrica = nomeRubrica;
+    public void setValor(double valor) {
+        this.valor = valor;
     }
 
     public int getQuantidadeRef() {
@@ -42,11 +34,19 @@ public class ProventoDescontoNeutro {
         this.quantidadeRef = quantidadeRef;
     }
 
-    public double getValor() {
-        return valor;
+    public int getCodigoRubrica() {
+        return codigoRubrica;
     }
 
-    public void setValor(double valor) {
-        this.valor = valor;
+    public void setCodigoRubrica(int codigoRubrica) {
+        this.codigoRubrica = codigoRubrica;
+    }
+
+    public String getDescricaoRubrica() {
+        return descricaoRubrica;
+    }
+
+    public void setDescricaoRubrica(String descricaoRubrica) {
+        this.descricaoRubrica = descricaoRubrica;
     }
 }

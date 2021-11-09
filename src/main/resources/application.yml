@@ -13,3 +13,4 @@ logging:
 
 resource:
   caminhoAnexo: "d:\\listaFuncionarios.txt"
+  caminhoContraCheque: "d:\\proventosDescontos.txt"

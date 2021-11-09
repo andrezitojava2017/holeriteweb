@@ -9,6 +9,17 @@ public class Resources {
     @Value("${resource.caminhoAnexo}")
     private String caminhoAnexo;
 
+    @Value("${resource.caminhoContraCheque}")
+    private String caminhoContraCheque;
+
+    public String getCaminhoContraCheque() {
+        return caminhoContraCheque;
+    }
+
+    public void setCaminhoContraCheque(String caminhoContraCheque) {
+        this.caminhoContraCheque = caminhoContraCheque;
+    }
+
     public String getCaminhoAnexo() {
         return caminhoAnexo;
     }
