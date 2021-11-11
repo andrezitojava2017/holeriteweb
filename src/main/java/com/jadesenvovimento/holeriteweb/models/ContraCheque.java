@@ -1,9 +1,9 @@
 package com.jadesenvovimento.holeriteweb.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Document(collection = "contra-cheques")
@@ -11,15 +11,16 @@ public class ContraCheque {
 
     @Id
     private String id;
+    @DBRef
     private Funcionario funcionario;
-    private LocalDate competencia;
+    private String competencia;
     private List<ProventoDescontoNeutro> proventos;
     private List<ProventoDescontoNeutro> descontos;
 
     public ContraCheque() {
     }
 
-    public ContraCheque( Funcionario funcionario, Orgao orgao, LocalDate competencia) {
+    public ContraCheque( Funcionario funcionario, Orgao orgao, String competencia) {
         this.funcionario = funcionario;
         this.competencia = competencia;
     }
@@ -56,11 +57,11 @@ public class ContraCheque {
         this.funcionario = funcionario;
     }
 
-    public LocalDate getCompetencia() {
+    public String getCompetencia() {
         return competencia;
     }
 
-    public void setCompetencia(LocalDate competencia) {
+    public void setCompetencia(String competencia) {
         this.competencia = competencia;
     }
 }

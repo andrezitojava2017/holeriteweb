@@ -4,6 +4,7 @@ import com.jadesenvovimento.holeriteweb.models.ContraCheque;
 import com.jadesenvovimento.holeriteweb.models.Funcionario;
 import com.jadesenvovimento.holeriteweb.models.ProventoDescontoNeutro;
 import com.jadesenvovimento.holeriteweb.models.TipoProventoDesconto;
+import com.jadesenvovimento.holeriteweb.repository.ContraChequeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,11 +14,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ContraChequeService {
@@ -25,6 +27,9 @@ public class ContraChequeService {
 
     @Autowired
     FuncionarioService funcionarioService;
+
+    @Autowired
+    ContraChequeRepository contCheqRepository;
 
 
     /**
@@ -39,6 +44,7 @@ public class ContraChequeService {
         try {
             Path caminho = Paths.get(destino);
             file.transferTo(caminho);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,7 +57,7 @@ public class ContraChequeService {
      *
      * @param caminhoAnexoIII
      */
-    public List<ContraCheque> importarDadosContraChequeAnexoIII(String caminhoAnexoIII, String cnpj) {
+    public List<ContraCheque> importarDadosContraChequeAnexoIII(String caminhoAnexoIII, String cnpj, String competencia) {
 
         List<ContraCheque> contraCheqFuncionario = new ArrayList<>();
         try {
@@ -59,7 +65,7 @@ public class ContraChequeService {
             Path arquivoAnexo = Paths.get(caminhoAnexoIII);
             List<String> linhas = Files.readAllLines(arquivoAnexo, StandardCharsets.ISO_8859_1);
 
-            contraCheqFuncionario = gerarContraChequePorFuncionario(linhas, cnpj);
+            contraCheqFuncionario = gerarContraChequePorFuncionario(linhas, cnpj, competencia);
 
 
         } catch (IOException e) {
@@ -78,7 +84,8 @@ public class ContraChequeService {
      * @param cnpj
      * @return
      */
-    private List<ContraCheque> gerarContraChequePorFuncionario(List<String> dadosArquivoProvDesconto, String cnpj) {
+    private List<ContraCheque> gerarContraChequePorFuncionario(List<String> dadosArquivoProvDesconto,
+                                                               String cnpj, String competencia) {
 
         List<ContraCheque> contraCheques = new ArrayList<>();
 
@@ -103,6 +110,7 @@ public class ContraChequeService {
                 cntCh.setFuncionario(func);
                 cntCh.setProventos((List<ProventoDescontoNeutro>) listaProvFunc[0]);
                 cntCh.setDescontos((List<ProventoDescontoNeutro>) listaProvFunc[1]);
+                cntCh.setCompetencia(competencia);
                 contraCheques.add(cntCh);
 
             });
@@ -127,39 +135,51 @@ public class ContraChequeService {
         List<ProventoDescontoNeutro> descontos = new ArrayList<>();
 
         // iteramos na linha recuperada, q contem os dados de proventos/descontos de cada funcionario
-        dadosArquivoProvDesc.stream().map(ln -> ln.split("#"))
+        // captura o campo CPF da linha e compara com cpf q esta iterando
+        // agora iteramos sobre o array retornado, com as posições do map
+        for (String ln : dadosArquivoProvDesc) {
+            String[] array = ln.split("#");
+            if (array[1].equalsIgnoreCase(func.getCpf())) {
+                ProventoDescontoNeutro prov = new ProventoDescontoNeutro();
+                // recuperamos o codigo da rubrica
+                int tipoProv = Integer.parseInt(array[7]);
 
-                // captura o campo CPF da linha e compara com cpf q esta iterando
-                .filter(array -> array[1].equalsIgnoreCase(func.getCpf()))
 
-                // agora iteramos sobre o array retornado, com as posições do map
-                .forEach(data -> {
+                if (tipoProv == TipoProventoDesconto.PROVENTO) {
 
-                    ProventoDescontoNeutro prov = new ProventoDescontoNeutro();
-                    // recuperamos o codigo da rubrica
-                    int tipoProv = Integer.parseInt(data[7]);
+                    prov.setCodigoRubrica(Integer.parseInt(array[3]));
+                    prov.setDescricaoRubrica(array[4]);
+                    prov.setValor(Double.parseDouble(array[6].replace(",", ".")));
+                    proventos.add(prov);
 
-                    if (tipoProv == TipoProventoDesconto.PROVENTO) {
+                } else if (tipoProv == TipoProventoDesconto.DESCONTO) {
 
-                        prov.setCodigoRubrica(Integer.parseInt(data[3]));
-                        prov.setDescricaoRubrica(data[4]);
-                        prov.setValor(Double.parseDouble(data[6].replace(",", ".")));
-                        proventos.add(prov);
+                    prov.setCodigoRubrica(Integer.parseInt(array[3]));
+                    prov.setDescricaoRubrica(array[4]);
+                    prov.setValor(Double.parseDouble(array[6].replace(",", ".")));
+                    descontos.add(prov);
 
-                    } else if (tipoProv == TipoProventoDesconto.DESCONTO) {
+                }
 
-                        prov.setCodigoRubrica(Integer.parseInt(data[3]));
-                        prov.setDescricaoRubrica(data[4]);
-                        prov.setValor(Double.parseDouble(data[6].replace(",", ".")));
-                        descontos.add(prov);
-
-                    }
-
-                });
+            }
+        }
         listaProventos[0] = proventos;
         listaProventos[1] = descontos;
 
         return listaProventos;
+    }
+
+
+    /**
+     * grava na base de dados os contra cheques que foram gerados pela leitura do arquivo
+     *
+     * @param lstContraCheques
+     * @return
+     */
+    public List<ContraCheque> salvarContraChequesFuncionarios(List<ContraCheque> lstContraCheques) {
+
+        List<ContraCheque> contraCheques = contCheqRepository.saveAll(lstContraCheques);
+        return contraCheques;
     }
 
 }
