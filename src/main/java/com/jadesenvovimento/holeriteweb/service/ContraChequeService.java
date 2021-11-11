@@ -182,4 +182,16 @@ public class ContraChequeService {
         return contraCheques;
     }
 
+
+    /**
+     * recupera um contra cheque de um determinado funcionario
+     * de uma competencia especifica
+     * @param idFuncionario
+     * @param competencia
+     * @return
+     */
+    public ContraCheque contraChequePorFuncionario(String idFuncionario, String competencia){
+        ContraCheque byFuncionario = contCheqRepository.findByFuncionario(idFuncionario, competencia);
+        return byFuncionario;
+    }
 }

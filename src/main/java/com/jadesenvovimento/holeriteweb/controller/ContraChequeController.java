@@ -54,4 +54,19 @@ public class ContraChequeController {
 
     }
 
+    @GetMapping("/{id}/{competencia}")
+    public ResponseEntity<ContraCheque> contraChequeFuncionario(@RequestHeader(value = "token") String token,
+                                                  @PathVariable String id,
+                                                  @PathVariable String competencia){
+
+        if(usuarioSerive.verificaTokenUsuario(token)){
+
+            ContraCheque contraCheque = cntChequeService.contraChequePorFuncionario(id, competencia);
+            return new ResponseEntity(contraCheque,HttpStatus.OK);
+        } else {
+            throw new TokenNotFoundExcpetion("TOKEN nao foi informado!!");
+        }
+
+    }
+
 }
