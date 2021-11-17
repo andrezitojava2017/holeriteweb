@@ -5,7 +5,7 @@ com intuito de disponibilizar de forma agil, os holerites dos servidores municip
 # Linguagem :back: :end:
 <code><image src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white"/></code>
 
-# Framework
+# Frameworks
 <code><image src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/></code>
 
 # Banco de dados
