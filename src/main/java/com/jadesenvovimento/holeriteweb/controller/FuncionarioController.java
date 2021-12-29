@@ -48,7 +48,8 @@ public class FuncionarioController {
         if (usuario.verificaTokenUsuario(token)) {
 
             String[] split = anexo.getContentType().split("/");
-            if (split[1].equals("plain")) {
+            String[] extension = split[1].split(";");
+            if (extension[0].equals("plain")) {
                 Optional<Orgao> org = this.orgao.consultaOrgaoPorCnpj(cnpj);
 
                 org.ifPresentOrElse(og -> {
@@ -65,6 +66,7 @@ public class FuncionarioController {
                 });
 
             } else {
+                System.out.println(">>>>" + split[0] + "\n>>>>" + split[1]);
                 return new ResponseEntity("Arquivo informado com extensão invalida", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
